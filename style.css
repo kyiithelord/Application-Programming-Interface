@@ -1,0 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Lora:wght@400;500;600&family=Montserrat:wght@300;400&family=Padauk:wght@700&family=Poppins:ital@1&family=Roboto:wght@300;400&family=Rubik:wght@300;400&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
