@@ -2,26 +2,31 @@
   {
     "id": 1,
     "title": "Special Web Design",
-    "Short_name": "SWD"
+    "short_name": "SWD",
+    "fee": 300000
   },
   {
     "id": 2,
     "title": "Web Application Development",
-    "Short_name": "WAD"
+    "short_name": "WAD",
+    "fee": 320000
   },
   {
     "id": 3,
     "title": "Premium UI Design",
-    "Short_name": "PUD"
+    "short_name": "PUD",
+    "fee": 350000
   },
   {
+    "id": 4,
     "title": "Web Dev Foundation",
     "short_name": "WDF",
-    "id": 4
+    "fee": 250000
   },
   {
+    "id": 5,
     "title": "Figma Introduction",
     "short_name": "FGI",
-    "id": 5
+    "fee": 200000
   }
 ]
