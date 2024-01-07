@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { baseUrl } from "./config";
 import { rowGroup, rowTemplate } from "./selector";
 
@@ -16,4 +17,22 @@ export const rowRender = (rows) => {
 
 export const url = (path) => {
   return baseUrl + path;
+};
+
+export const toast = (message, icon = "success") => {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "bottom-start",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+  Toast.fire({
+    icon: icon,
+    title: message,
+  });
 };
