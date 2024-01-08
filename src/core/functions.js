@@ -4,6 +4,7 @@ import { rowGroup, rowTemplate } from "./selector";
 
 export const rowUi = ({ id, title, short_name, fee }) => {
   const row = rowTemplate.content.cloneNode(true);
+  row.querySelector("tr").setAttribute("course-id", id);
   row.querySelector(".row-id").innerText = id;
   row.querySelector(".row-title").innerText = title;
   row.querySelector(".row-short").innerText = short_name;

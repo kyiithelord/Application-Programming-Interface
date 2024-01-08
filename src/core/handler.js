@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { rowUi, toast, url } from "./functions";
 import { courseForm, rowGroup } from "./selector";
 
@@ -27,4 +28,34 @@ export const courseFormHandler = (event) => {
       courseForm.reset();
       toast("Added Course Successfully");
     });
+};
+
+export const rowGroupHandler = (event) => {
+  if (event.target.classList.contains("row-del")) {
+    const currentRow = event.target.closest("tr");
+    Swal.fire({
+      title: "Are you sure to delete?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        event.target.toggleAttribute("disabled");
+        fetch(url("/courses/" + currentRowId), { method: "DELETE" }).then(
+          (res) => {
+            event.target.toggleAttribute("disabled");
+
+            if (res.status === 204) {
+              toast("Course Delete Successfully");
+              currentRow.remove();
+            }
+          }
+        );
+      }
+    });
+    const currentRowId = currentRow.getAttribute("course-id");
+  }
 };
