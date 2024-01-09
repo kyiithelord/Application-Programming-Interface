@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import { rowUi, toast, url } from "./functions";
-import { courseForm, rowGroup } from "./selector";
+import { courseEditForm, courseForm, editDrawer, rowGroup } from "./selector";
 
 export const courseFormHandler = (event) => {
   event.preventDefault();
@@ -33,6 +33,8 @@ export const courseFormHandler = (event) => {
 export const rowGroupHandler = (event) => {
   if (event.target.classList.contains("row-del")) {
     const currentRow = event.target.closest("tr");
+    const currentRowId = currentRow.getAttribute("course-id");
+
     Swal.fire({
       title: "Are you sure to delete?",
       text: "You won't be able to revert this!",
@@ -56,6 +58,60 @@ export const rowGroupHandler = (event) => {
         );
       }
     });
+  } else if (event.target.classList.contains("row-edit")) {
+    // first to take old value
+    // update changes
+    const currentRow = event.target.closest("tr");
     const currentRowId = currentRow.getAttribute("course-id");
+    event.target.toggleAttribute("disabled");
+    fetch(url("/courses/" + currentRowId))
+      .then((res) => res.json())
+      .then((json) => {
+        // show old value
+        event.target.toggleAttribute("disabled");
+        courseEditForm.querySelector("#edit_course_id").value = json.id;
+        courseEditForm.querySelector("#edit_course_title").value = json.title;
+        courseEditForm.querySelector("#edit_short_name").value =
+          json.short_name;
+        courseEditForm.querySelector("#edit_course_fee").value = json.fee;
+
+        editDrawer.show();
+      });
   }
+};
+
+export const courseEditFormHandler = (event) => {
+  event.preventDefault();
+
+  //url
+  //header
+  const myHeader = new Headers();
+  myHeader.append("Content-Type", "application/json");
+  //body
+  const formData = new FormData(courseEditForm);
+  //id
+  const currentId = formData.get("edit_course_id");
+  const jsonData = JSON.stringify({
+    title: formData.get("edit_course_title"),
+    short_name: formData.get("edit_short_name"),
+    fee: formData.get("edit_course_fee"),
+  });
+  //method
+  courseEditForm.querySelector("button").toggleAttribute("disabled");
+  fetch(url("/courses/" + currentId), {
+    method: "PUT",
+    headers: myHeader,
+    body: jsonData,
+  })
+    .then((res) => res.json())
+    .then((json) => {
+      courseEditForm.querySelector("button").toggleAttribute("disabled");
+      courseEditForm.reset();
+      editDrawer.hide();
+
+      const currentRow = document.querySelector(`tr[course-id='${json.id}']`);
+      currentRow.querySelector(".row-title").innerText = json.title;
+      currentRow.querySelector(".row-short").innerText = json.short_name;
+      currentRow.querySelector(".row-fee").innerText = json.fee;
+    });
 };
