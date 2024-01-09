@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { rowUi, toast, url } from "./functions";
+import { rowRender, rowUi, toast, url } from "./functions";
 import { courseEditForm, courseForm, editDrawer, rowGroup } from "./selector";
 
 export const courseFormHandler = (event) => {
@@ -148,4 +148,23 @@ export const editCellHandler = (event) => {
         .then((json) => toast("Update Successfully"));
     });
   }
+};
+
+export const searchInputHandler = (event) => {
+  event.target.previousElementSibling.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth=1.5 stroke="currentColor" class="w-4 h-4 animate-spin">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+</svg>`;
+  fetch(url("/courses?title[like]=" + event.target.value))
+    .then((res) => res.json())
+    .then((json) => {
+      event.target.previousElementSibling.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" class="w-4 h-4 text-gray-500 dark:text-gray-400">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+    </svg>`;
+      if (json.length) {
+        rowRender(json);
+      } else {
+        toast("Data not here yet!");
+        rowGroup.innerHTML = `<tr><td colspan='5' class='text-center px-6 py-4'>There is no course <a href="http://${location.host}">Browse all</a> </td></tr>`;
+      }
+    });
 };
