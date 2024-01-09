@@ -115,3 +115,37 @@ export const courseEditFormHandler = (event) => {
       currentRow.querySelector(".row-fee").innerText = json.fee;
     });
 };
+
+export const editCellHandler = (event) => {
+  if (event.target.classList.contains("cell-editable")) {
+    const currentRow = event.target.closest("tr");
+    const currentRowId = currentRow.getAttribute("course-id");
+    const currentCell = event.target;
+    const currentText = currentCell.innerText;
+    const currentCellColumnName = currentCell.getAttribute("cell-col");
+    currentCell.innerText = "";
+    const input = document.createElement("input");
+    input.value = currentText;
+    input.className =
+      "bg-blue-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-blue-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+    currentCell.append(input);
+    input.focus();
+
+    input.addEventListener("blur", () => {
+      const newValue = input.value;
+      currentCell.innerText = newValue;
+      const myHeader = new Headers();
+      myHeader.append("Content-Type", "application/json");
+      const updateData = {};
+      updateData[currentCellColumnName] = newValue;
+      const jsonData = JSON.stringify(updateData);
+      fetch(url("/courses/" + currentRowId), {
+        method: "PATCH",
+        headers: myHeader,
+        body: jsonData,
+      })
+        .then((res) => res.json())
+        .then((json) => toast("Update Successfully"));
+    });
+  }
+};
