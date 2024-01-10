@@ -1,5 +1,13 @@
 import Swal from "sweetalert2";
-import { rowRender, rowUi, toast, url } from "./functions";
+import {
+  confirmBox,
+  editRow,
+  removeRow,
+  rowRender,
+  rowUi,
+  toast,
+  url,
+} from "./functions";
 import { courseEditForm, courseForm, editDrawer, rowGroup } from "./selector";
 
 export const courseFormHandler = async (event) => {
@@ -45,51 +53,11 @@ export const courseFormHandler = async (event) => {
 
 export const rowGroupHandler = (event) => {
   if (event.target.classList.contains("row-del")) {
-    const currentRow = event.target.closest("tr");
-    const currentRowId = currentRow.getAttribute("course-id");
-
-    Swal.fire({
-      title: "Are you sure to delete?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        event.target.toggleAttribute("disabled");
-        fetch(url("/courses/" + currentRowId), { method: "DELETE" }).then(
-          (res) => {
-            event.target.toggleAttribute("disabled");
-
-            if (res.status === 204) {
-              toast("Course Delete Successfully");
-              currentRow.remove();
-            }
-          }
-        );
-      }
-    });
+    removeRow(event.target.closest("tr").getAttribute("course-id"));
   } else if (event.target.classList.contains("row-edit")) {
     // first to take old value
     // update changes
-    const currentRow = event.target.closest("tr");
-    const currentRowId = currentRow.getAttribute("course-id");
-    event.target.toggleAttribute("disabled");
-    fetch(url("/courses/" + currentRowId))
-      .then((res) => res.json())
-      .then((json) => {
-        // show old value
-        event.target.toggleAttribute("disabled");
-        courseEditForm.querySelector("#edit_course_id").value = json.id;
-        courseEditForm.querySelector("#edit_course_title").value = json.title;
-        courseEditForm.querySelector("#edit_short_name").value =
-          json.short_name;
-        courseEditForm.querySelector("#edit_course_fee").value = json.fee;
-
-        editDrawer.show();
-      });
+    editRow(event.target.closest("tr").getAttribute("course-id"));
   }
 };
 
