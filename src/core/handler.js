@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import { rowRender, rowUi, toast, url } from "./functions";
 import { courseEditForm, courseForm, editDrawer, rowGroup } from "./selector";
 
-export const courseFormHandler = (event) => {
+export const courseFormHandler = async (event) => {
   event.preventDefault();
 
   const formData = new FormData(courseForm);
@@ -15,19 +15,32 @@ export const courseFormHandler = (event) => {
   myHeader.append("Content-Type", "application/json");
   //   disable form
   courseForm.querySelector("button").toggleAttribute("disabled");
-  fetch(url("/courses"), {
+  // fetch(url("/courses"), {
+  //   method: "POST",
+  //   headers: myHeader,
+  //   body: jsonData,
+  // })
+  //   .then((res) => res.json())
+  //   .then((json) => {
+  //     courseForm.querySelector("button").toggleAttribute("disabled");
+
+  //     rowGroup.append(rowUi(json));
+  //     courseForm.reset();
+  //     toast("Added Course Successfully");
+  //   });
+
+  // ASYNC METHOD
+  const res = await fetch(url("/courses"), {
     method: "POST",
     headers: myHeader,
     body: jsonData,
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      courseForm.querySelector("button").toggleAttribute("disabled");
+  });
+  const json = await res.json();
+  courseForm.querySelector("button").toggleAttribute("disabled");
 
-      rowGroup.append(rowUi(json));
-      courseForm.reset();
-      toast("Added Course Successfully");
-    });
+  rowGroup.append(rowUi(json));
+  courseForm.reset();
+  toast("Added Course Successfully");
 };
 
 export const rowGroupHandler = (event) => {
